@@ -1,0 +1,8 @@
+{
+    "verbose": false,
+    "watch": [
+        "./server"
+    ],
+    "ext": "ts tsx js jsx json",
+    "exec": "tsc -p ./server && node dist/app.js"
+}

@@ -1,0 +1,47 @@
+//十二天将 贵人、螣蛇、朱雀、六合、勾陈、青龙、天空、白虎、太常、玄武、 太阴、天后。
+// 简称：贵螣朱六勾青空白常玄阴后
+enum Jiang {
+  gui,
+  teng,
+  zhu,
+  liu,
+  gou,
+  qing,
+  bai,
+  chang,
+  xuan,
+  yin,
+  hou
+}
+
+//天干 甲、乙、丙、丁、戊、己、庚、 辛、壬、癸
+//trunks
+enum TianGang{
+  jia,
+  yi,
+  bing,
+  ding,
+  wu,
+  ji,
+  geng,
+  xin,
+  ren,
+  gui
+}
+
+//地支 子、丑、寅、卯、辰、巳、午、未、 申、酉、戌、亥
+// branches
+enum DiZi{
+  zi,
+  chou,
+  yin,
+  mou,
+  chen,
+  si,
+  wu,
+  wei,
+  shen,
+  you,
+  qu,
+  hai
+}
