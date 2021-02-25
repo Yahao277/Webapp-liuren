@@ -1,5 +1,3 @@
-// ------
-
 // 五行 金木水火土
 enum fiveElement{
   SHUI = 'shui',
@@ -10,11 +8,11 @@ enum fiveElement{
 }
 
 enum ElementRelation{
-  generate = 'generate', // 生，脱， 子孙
-  beingGenerated = 'beingGenerate', // 被生，父母
-  restrain = 'restrain', // 克， 妻财
-  beingRestrained = 'beingRestrain', // 被克， 官鬼
-  none = 'none' // 兄弟
+  generate = '生', // 生，脱， 子孙
+  beingGenerated = '被生', // 被生，父母
+  restrain = '克', // 克， 妻财
+  beingRestrained = '被克', // 被克， 官鬼
+  none = '兄弟' // 兄弟
 }
 
 const elementRelationTable:{

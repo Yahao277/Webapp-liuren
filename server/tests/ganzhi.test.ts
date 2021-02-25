@@ -1,4 +1,4 @@
-import { TianGan as T, DiZhi as D, Gan, Zhi } from "./../liuren/GanZhi";
+import { TianGan as T, DiZhi as D, Gan, Zhi } from "./../core/liuren/GanZhi";
 
 
 test('十干寄宫',() => {

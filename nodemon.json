@@ -4,5 +4,5 @@
         "./server"
     ],
     "ext": "ts tsx js jsx json",
-    "exec": "tsc -p ./server && node dist/app.js"
+    "exec": "tsc -p ./server && node dist/index.js"
 }

@@ -6,10 +6,10 @@ import {
   Gan,
   Zhi,
   TianGan as T,
-  DiZhi as D
+  DiZhi as D,
+  Jiang
 } from './GanZhi'
 import Liuren from "./liuren";
-import { SikePair } from "./Sike";
 import { TianDiState } from "./TianDiState";
 
 
@@ -18,8 +18,8 @@ import { TianDiState } from "./TianDiState";
 export type SanChuanPair = {
   item: Zhi, // 发用支
   dunGan?: Gan | undefined, // 遁干 或 空亡
-  jiang?: string, // 所乘天将
-  dayRelation: R // 对应日干的六亲关系
+  jiang?: Jiang, // 所乘天将
+  dayRelation?: R // 对应日干的六亲关系
   position: number, // 0:初 , 1:中 , 2:末
 }
 
@@ -33,10 +33,9 @@ type InfoParams ={
 //JiuZongMen
 //九宗门
 // SanChuanController
-class SanChuanCtrl{
+export class SanChuanCtrl{
   sike;
   state;
-  methodHandler:any;
   reducedPairs:SikePair[];
   toTopRestrains:SikePair[];
   toBotRestrains:SikePair[];
@@ -46,7 +45,6 @@ class SanChuanCtrl{
   public constructor(sike:SikePair[],state:TianDiState,yueJiang:Zhi,hour:Zhi){
     this.state = state;
     this.sike = sike;
-    this.methodHandler = null;
     this.reducedPairs = [];
     this.toTopRestrains = [];
     this.toBotRestrains = [];
@@ -60,6 +58,7 @@ class SanChuanCtrl{
    */
   countPairs(){
     let pairs = 4;
+
     for(let i=0;i<4;i++){
       for(let j=i+1;j<4 && j!==i;j++){
         if(this.sike[i].top === this.sike[j].top){
@@ -71,7 +70,6 @@ class SanChuanCtrl{
   }
   
   countRestrains(){
-    //TODO: count only unique pairs
     this.sike.map(item => {
       let topElement = item.top.element;
       let botElement = item.bot.element; 
@@ -81,6 +79,11 @@ class SanChuanCtrl{
         this.toTopRestrains.push(item)
        }
     })
+
+    // get unique pairs
+    this.toTopRestrains = this.toTopRestrains.filter((value, index, self) => self.indexOf(self.find((v) => v.top === value.top)!) === index)
+    this.toBotRestrains = this.toBotRestrains.filter((value, index, self) => self.indexOf(self.find((v) => v.top === value.top)!) === index)
+
   }
 
   decideMethod():AbstractHandler{
@@ -113,103 +116,43 @@ class SanChuanCtrl{
         case 4:
           maoxing = new MaoxingHandler(null,this);
           initialHandler = new YaokeHandler(maoxing,this);
+          if(D.getChongShen(this.yueJiang) === this.hour){
+            initialHandler = new FanyinHandler(null,this)
+          }
           break;
         case 3:
-          bieze = new MaoxingHandler(null,this);
+          bieze = new BiezeHandler(null,this);
           initialHandler = new YaokeHandler(bieze,this);
           break;
         case 2:
-          fanyin = new MaoxingHandler(null,this);;
-          fuyin = new MaoxingHandler(fanyin,this);
-          initialHandler = new MaoxingHandler(fuyin,this);
+          initialHandler = new BazhuanHandler(null,this);
+          break;
+        case 1:
+          initialHandler = new FuyinHandler(null,this);
           break;
         default:
           throw new Error("Count pairs error");
           break;
       }
     }
+
+    if(this.yueJiang === this.hour){
+      initialHandler = new FuyinHandler(null,this);
+    }
+
     return initialHandler;
-
-    
-    /***  EASY MODE *****
-    switch(countPairs){
-      case 4:
-        maoxing = new MaoxingHandler(null,this);
-        yaoke = new YaokeHandler(maoxing,this);
-        shehai = new ShehaiHandler(yaoke,this);
-        biyong = new BiyongHandler(shehai,this)
-        initialHandler = new ZeikeHandler(biyong,this)
-        break;
-      case 3:
-        bieze = new MaoxingHandler(null,this);
-        yaoke = new YaokeHandler(bieze,this);
-        shehai = new ShehaiHandler(yaoke,this);
-        biyong = new BiyongHandler(shehai,this)
-        initialHandler = new ZeikeHandler(biyong,this)
-        break;
-      case 2:
-        fanyin = new MaoxingHandler(null,this);;
-        fuyin = new MaoxingHandler(fanyin,this);
-        bazhuan = new MaoxingHandler(fuyin,this);
-        shehai = new ShehaiHandler(bazhuan,this);
-        biyong = new BiyongHandler(shehai,this)
-        initialHandler = new ZeikeHandler(biyong,this)
-        break;
-      default:
-        throw new Error("Count pairs error");
-        break;
-    }
-    */
-
-  }
-
-  //九宗门
-  public nineMethods(){
-
   }
 }
 
-const decideMethod = (sike:SikePair[]) => {
-
-  //(四课 == 4) -> 全,  (四课 < 4) -> 不全
-  const countSikePairs = () => {
-    let pairs = 4;
-
-    for(let i=0;i<4;i++){
-      for(let j=i+1;j<4 && j!==i;j++){
-        if(sike[i].bot instanceof Gan){
-          //TODO: convert Gan to Zhi:十干寄宫
-          // new sikepair 
-        }
-        if(sike[i].top === sike[i].top){
-          pairs -= 1;
-        }
-      }
-    }
-    return pairs;
-  }
-
-  const countRestrains = () => {
-    sike.map(item => {
-      let topElement = item.top.element;
-      let botElement = item.bot.element; 
-      if(getElementRelation(topElement,botElement) ===  R.restrain){ // toBotRestrain
-        toBotRestrains.push(item)
-       }else if(getElementRelation(topElement,botElement) === R.beingRestrained){ // toTopRestrain
-        toTopRestrains.push(item)
-       }
-    })
-  }
-
-  let toTopRestrains:SikePair[] = []; //贼上
-  let toBotRestrains:SikePair[] = []; //克下
-  let countPairs = countSikePairs();
-  countRestrains();
-}
-
+/**
+ * Nine methods: 九宗门
+ */
 
 abstract class AbstractHandler{
   successor:AbstractHandler|any;
+  initialPhase?:Zhi;
+  midPhase?:Zhi;
+  endPhase?:Zhi;
   info;
 
   public constructor(handler:AbstractHandler|null,info:SanChuanCtrl){
@@ -221,7 +164,7 @@ abstract class AbstractHandler{
     this.successor = handler;
   }
 
-  public handle():SanChuanPair[]|void{
+  public handle():SanChuanPair[]|null{
     if(this.check()){
       return this.use()
     }
@@ -229,7 +172,46 @@ abstract class AbstractHandler{
   }
   
   public abstract check():boolean;
-  public abstract use():SanChuanPair[]|void;
+  public abstract use():SanChuanPair[]|null;
+
+  public putComplements(): SanChuanPair[]{ 
+    const testing = false;
+    if(testing){
+      return [
+        {item:this.initialPhase!,position:0},
+        {item:this.midPhase!,position:1},
+        {item:this.endPhase!,position:2}
+      ]
+    }
+    
+    // 天将，六亲，遁干
+    // 计算 六旬中的哪一旬
+    let diff = (this.info.sike[2].bot.position - this.info.sike[0].bot.position + 12) % 12 
+    const getDunGan = (zhi:Zhi,diff:number) => {
+      const dun = (zhi.position - diff + 12) % 12
+      return T.Serie[dun]?T.Serie[dun]:T.KONG
+    }
+    const dayElement = this.info.sike[0].bot.element     
+
+    return [
+        {item:this.initialPhase!,position:0,
+          jiang:this.info.state.getJiangByTop(this.initialPhase!),
+          dayRelation:getElementRelation(dayElement,this.initialPhase!.element),
+          dunGan: getDunGan(this.initialPhase!,diff)
+        },
+        {item:this.midPhase!,position:1,
+          jiang:this.info.state.getJiangByTop(this.midPhase!),
+          dayRelation:getElementRelation(dayElement,this.midPhase!.element),
+          dunGan: getDunGan(this.midPhase!,diff)
+        },
+        {item:this.endPhase!,position:2,
+          jiang:this.info.state.getJiangByTop(this.endPhase!),
+          dayRelation:getElementRelation(dayElement,this.endPhase!.element),
+          dunGan: getDunGan(this.endPhase!,diff)
+        }
+    ]
+
+  }
 }
 
 /**
@@ -264,15 +246,11 @@ class ZeikeHandler extends AbstractHandler{
     return false;
   }
   use(){
-    let initialPhase = this.usePair?.top;
-    let midPhase = this.info.state.getTop(initialPhase!)
-    let endPhase = this.info.state.getTop(midPhase)
+    this.initialPhase = this.usePair?.top;
+    this.midPhase = this.info.state.getTop(this.initialPhase!)
+    this.endPhase = this.info.state.getTop(this.midPhase)
 
-    let sanChuanData:SanChuanPair[] = [
-      {position:0,item:initialPhase!,dayRelation:getElementRelation(this.info.sike[0].bot.element,initialPhase!.element)},
-      {position:1,item:midPhase!,    dayRelation:getElementRelation(this.info.sike[0].bot.element,midPhase.element)},
-      {position:2,item:endPhase,     dayRelation:getElementRelation(this.info.sike[0].bot.element,endPhase.element)}
-    ]
+    return this.putComplements();
   }
 
 }
@@ -313,10 +291,11 @@ class BiyongHandler extends AbstractHandler{
   }
 
   use(){
-    let initialPhase = this.usePair?.top;
-    let midPhase = this.info.state.getTop(initialPhase!)
-    let endPhase = this.info.state.getTop(midPhase)
-    
+    this.initialPhase = this.usePair?.top;
+    this.midPhase = this.info.state.getTop(this.initialPhase!)
+    this.endPhase = this.info.state.getTop(this.midPhase)
+
+    return this.putComplements();
   }
 }
 
@@ -362,10 +341,11 @@ class ShehaiHandler extends AbstractHandler{
     return ret;
   }
   use(){
-    let initialPhase = this.usePair?.top;
-    let midPhase = this.info.state.getTop(initialPhase!)
-    let endPhase = this.info.state.getTop(midPhase)
+    this.initialPhase = this.usePair?.top;
+    this.midPhase = this.info.state.getTop(this.initialPhase!)
+    this.endPhase = this.info.state.getTop(this.midPhase)
     
+    return this.putComplements();
   }
 }
 
@@ -425,10 +405,11 @@ class YaokeHandler extends AbstractHandler{
     return false;
   }
   use(){
-    let initialPhase = this.usePair?.top;
-    let midPhase = this.info.state.getTop(initialPhase!)
-    let endPhase = this.info.state.getTop(midPhase)
+    this.initialPhase = this.usePair?.top;
+    this.midPhase = this.info.state.getTop(this.initialPhase!)
+    this.endPhase = this.info.state.getTop(this.midPhase)
     
+    return this.putComplements();
   }
 }
 
@@ -443,19 +424,21 @@ class MaoxingHandler extends AbstractHandler{
   }
   use(){
     const dayGanYang = this.info.sike[0].bot.isYang
-    let initialPhase
-    let midPhase
-    let endPhase
+    this.initialPhase
+    this.midPhase
+    this.endPhase
     
     if(dayGanYang){//阳日
-      initialPhase = this.info.state.getTop(D.YOU)
-      midPhase = this.info.sike[2].top
-      endPhase = this.info.sike[0].top
+      this.initialPhase = this.info.state.getTop(D.YOU)
+      this.midPhase = this.info.sike[2].top
+      this.endPhase = this.info.sike[0].top
     }else{//阴日
-      initialPhase = this.info.state.getBot(D.YOU)
-      midPhase = this.info.sike[0].top;
-      endPhase = this.info.sike[2].top;
+      this.initialPhase = this.info.state.getBot(D.YOU)
+      this.midPhase = this.info.sike[0].top;
+      this.endPhase = this.info.sike[2].top;
     }
+
+    return this.putComplements();
   }
 }
 
@@ -469,19 +452,20 @@ class BiezeHandler extends AbstractHandler{
   }
   use(){
     const dayGanYang = this.info.sike[0].bot.isYang
-    let initialPhase,midPhase,endPhase;
     
-    if(dayGanYang){//阳日
+    if(dayGanYang){//阳日 日干合 
       const dayGan = this.info.sike[0].bot
-      initialPhase = T.getJiGong(T.getWuhe(dayGan))
-      midPhase = this.info.sike[0].top
-      endPhase = midPhase
-    }else{//阴日
+      this.initialPhase = this.info.state.getTop(T.getJiGong(T.getWuhe(dayGan)))
+      this.midPhase = this.info.sike[0].top
+      this.endPhase = this.midPhase
+    }else{//阴日 日支三合
       let dayZhi =  this.info.sike[2].bot
-      initialPhase = D.getNextSanhe(dayZhi)
-      midPhase = this.info.sike[0].top
-      endPhase = midPhase
+      this.initialPhase = D.getNextSanhe(dayZhi)
+      this.midPhase = this.info.sike[0].top
+      this.endPhase = this.midPhase
     }
+
+    return this.putComplements();
   }
 }
 
@@ -492,13 +476,36 @@ class BazhuanHandler extends AbstractHandler{
   check(){
     const dayGan = this.info.sike[0].bot
     const dayZhi = this.info.sike[2].bot
+    //有克
+
+    //无克
     if(T.getJiGong(dayGan) === dayZhi){
       return true;
+    
     }
     return false;
   }
   use(){
+    const dayGan = this.info.sike[0].bot
+    const isDayYang = dayGan.isYang
+    let diff = 2;
 
+    //无克
+    if(isDayYang){    //刚日 干上神 前二辰
+      let use = this.info.sike[0].top
+      let next_pos = (use.position + 2) % 12;
+      this.initialPhase = D.Serie[next_pos]
+      this.midPhase = use;
+      this.endPhase = use;
+    }else{    //柔日 第四课天盘 后二辰
+      let use = this.info.sike[3].top
+      let prev_pos = (use.position + (-2+12)) % 12;
+      this.initialPhase = D.Serie[prev_pos]
+      this.midPhase = this.info.sike[0].top;
+      this.endPhase = this.midPhase;
+    }
+
+    return this.putComplements();
   }
 }
 
@@ -512,9 +519,44 @@ class FuyinHandler extends AbstractHandler{
     }
     return false;
   }
-
   use(){
+    const isDayYang = this.info.sike[0].bot.isYang;
 
+    //Special cases
+    switch(this.info.sike[0].bot){
+      case T.GUI: //癸寄丑宫
+          this.initialPhase = this.info.sike[0].top
+          this.midPhase = this.selectMidShen(this.initialPhase!)
+          this.endPhase = this.selectEndShen(this.midPhase!)
+        break;
+      case T.YI: //乙寄辰宫
+          this.initialPhase = this.info.sike[0].top
+          this.midPhase = this.info.sike[2].top
+          this.endPhase = this.selectEndShen(this.midPhase!)
+        break;
+      default:
+        if(isDayYang){
+          this.initialPhase = this.info.sike[0].top
+          this.midPhase = this.selectMidShen(this.initialPhase!)
+          this.endPhase = this.selectEndShen(this.midPhase!)
+        }else{
+          this.initialPhase = this.info.sike[2].top
+          this.midPhase = this.selectMidShen(this.initialPhase!)
+          this.endPhase = this.selectEndShen(this.midPhase!)
+        }
+        break;
+    }
+
+    return this.putComplements();
+  }
+
+  private selectEndShen(item:Zhi){
+    //有刑取刑，自刑取冲
+    let xingShen = D.getXingShen(item) === item ? D.getChongShen(item) : D.getXingShen(item)
+    return xingShen;
+  }
+  private selectMidShen(item:Zhi){
+    return D.getXingShen(item) === item ? this.info.sike[2].top : D.getXingShen(item)
   }
 }
 
@@ -529,9 +571,13 @@ class FanyinHandler extends AbstractHandler{
       throw new Error("End of chain and still no method has been used")
       return false;
     }
-
   }
   use(){
+    const dayZhi = this.info.sike[2].bot
+    this.initialPhase = D.getYima(dayZhi)
+    this.midPhase = this.info.sike[2].top
+    this.endPhase = this.info.sike[0].top
 
+    return this.putComplements();
   }
 }

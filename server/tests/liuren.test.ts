@@ -1,4 +1,3 @@
+import Liuren from '../core/liuren/liuren'
+import { TianGan as T, DiZhi as D, Zhi, Gan } from "../core/liuren/GanZhi";
 
-test('basic',() => {
-  expect('1').toBe('1')
-})
