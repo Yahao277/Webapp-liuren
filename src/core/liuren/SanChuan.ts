@@ -73,9 +73,9 @@ export class SanChuanCtrl{
     this.sike.map(item => {
       let topElement = item.top.element;
       let botElement = item.bot.element; 
-      if(getElementRelation(topElement,botElement) ===  R.restrain){ // toBotRestrain
+      if(getElementRelation(topElement,botElement) ===  R.Restrain){ // toBotRestrain
         this.toBotRestrains.push(item)
-       }else if(getElementRelation(topElement,botElement) === R.beingRestrained){ // toTopRestrain
+       }else if(getElementRelation(topElement,botElement) === R.BeingRestrained){ // toTopRestrain
         this.toTopRestrains.push(item)
        }
     })
@@ -368,7 +368,7 @@ class YaokeHandler extends AbstractHandler{
     //蒿矢课
     this.info.sike.map(item => {
       let topElement = item.top.element;
-      if(getElementRelation(topElement,dayGanElement) === R.restrain){
+      if(getElementRelation(topElement,dayGanElement) === R.Restrain){
         useTop = true;
         pairs.push(item);
       }
@@ -378,7 +378,7 @@ class YaokeHandler extends AbstractHandler{
     if(!useTop){
       this.info.sike.map(item => {
         let topElement = item.top.element;
-        if(getElementRelation(topElement,dayGanElement) === R.beingRestrained){
+        if(getElementRelation(topElement,dayGanElement) === R.BeingRestrained){
           pairs.push(item);
         }
       });

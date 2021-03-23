@@ -3,28 +3,30 @@ import * as E from './elements';
 
 export class Jiang{
   name
+  subname
   position
-  constructor(name:string,position:number){
+  constructor(name:string,subname:string,position:number){
     this.name = name;
     this.position = position;
+    this.subname = subname
   }
 }
 
 //十二天将 贵人、螣蛇、朱雀、六合、勾陈、青龙、天空、白虎、太常、玄武、 太阴、天后。
 // 简称：贵螣朱六勾青空白常玄阴后
-export class TianJiang{
-  static readonly  GUI = new Jiang('天乙贵人',0);
-  static readonly  TENG = new Jiang('腾蛇',1);
-  static readonly  ZHU = new Jiang('朱雀',2);
-  static readonly  LIU = new Jiang('六合',3);
-  static readonly  GOU = new Jiang('勾陈',4);
-  static readonly  QING = new Jiang('青龙',5);
-  static readonly  KONG = new Jiang('天空',6);
-  static readonly  BAI = new Jiang('白虎',7);
-  static readonly  CHANG = new Jiang('太常',8);
-  static readonly  XUAN = new Jiang('玄武',9);
-  static readonly  YIN = new Jiang('太阴',10);
-  static readonly  HOU = new Jiang('天后',11);
+export class TianJiang {
+  static readonly  GUI = new Jiang('天乙贵人','贵',0);
+  static readonly  TENG = new Jiang('腾蛇','蛇',1);
+  static readonly  ZHU = new Jiang('朱雀','雀',2);
+  static readonly  LIU = new Jiang('六合','合',3);
+  static readonly  GOU = new Jiang('勾陈','勾',4);
+  static readonly  QING = new Jiang('青龙','龙',5);
+  static readonly  KONG = new Jiang('天空','空',6);
+  static readonly  BAI = new Jiang('白虎','虎',7);
+  static readonly  CHANG = new Jiang('太常','常',8);
+  static readonly  XUAN = new Jiang('玄武','玄',9);
+  static readonly  YIN = new Jiang('太阴','阴',10);
+  static readonly  HOU = new Jiang('天后','后',11);
 
   /**
    * 起贵人
@@ -69,6 +71,20 @@ export class TianJiang{
       TianJiang.YIN,
       TianJiang.HOU      
     ]
+
+  static getByName(name:string){
+
+  const dict:{
+      [x:string]:Jiang
+    } = {}
+
+  TianJiang.Sequence.map(item => {
+      let x = item.name
+      dict[x]= item 
+  })
+
+    return dict[name]
+  }
 }
 
 // interface Item {}

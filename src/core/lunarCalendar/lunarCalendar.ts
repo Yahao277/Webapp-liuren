@@ -1,5 +1,4 @@
 import {
-  GanZhiPair,
   Gan,
   Zhi,
   TianGan,

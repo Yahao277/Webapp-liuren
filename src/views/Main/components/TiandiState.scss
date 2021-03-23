@@ -1,0 +1,45 @@
+.grid-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  grid-template-rows: 1fr 1fr 1fr 1fr;
+  gap: 0px 0px;
+  grid-template-areas:
+    "巳 午 未 申"
+    "辰 Title Title 酉"
+    "卯 Title Title 戌"
+    "寅 丑 子 亥";
+.Title { 
+  grid-area: Title; 
+  margin: auto;
+}
+
+.寅 { grid-area: 寅; }
+
+.卯 { grid-area: 卯; }
+
+.辰 { grid-area: 辰; }
+
+.巳 { grid-area: 巳; }
+
+.午 { grid-area: 午; }
+
+.未 { grid-area: 未; }
+
+.申 { grid-area: 申; }
+
+.酉 { grid-area: 酉; }
+
+.戌 { grid-area: 戌; }
+
+.亥 { grid-area: 亥; }
+
+.子 { grid-area: 子; }
+
+.丑 { grid-area: 丑; }
+
+/*.巳,.午,.未,.申,.辰,.酉,.卯,.戌,.寅,.丑,.子,.亥{
+ background-color:#b2ebf2;
+}
+*/
+}
+

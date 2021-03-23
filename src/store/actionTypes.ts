@@ -1,3 +1,0 @@
-export const CREATE_RECORD = "CREATE_RECORD"
-
-export const SAVE_RECORD = "SAVE_RECORD"

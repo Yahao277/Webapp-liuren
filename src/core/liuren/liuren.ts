@@ -17,10 +17,12 @@ export default class Liuren{
   testSanChuan:any
   sanChuanCtrl:SanChuanCtrl
   yueJiang
+  isNight:boolean
   //TODO: add bazi 八字
 
   public constructor({yueJiang,hour,day,night}:LiurenParams){
     this.yueJiang = yueJiang;
+    this.isNight = night
     this.state = new TianDiState(yueJiang,hour,night);
     this.sike = this.makeSike(day);
     this.sanChuanCtrl = new SanChuanCtrl(this.sike,this.state,yueJiang,hour)

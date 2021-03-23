@@ -8,7 +8,8 @@ import mongoose,{ConnectionOptions} from 'mongoose'
     const mongooseOptions: ConnectionOptions =   
     { useNewUrlParser: true,
     useCreateIndex: true, 
-    useUnifiedTopology: true 
+    useUnifiedTopology: true ,
+    useFindAndModify: false
   }
     const db = await mongoose.connect(
       config.mongoUri,

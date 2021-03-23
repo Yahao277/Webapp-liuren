@@ -56,7 +56,7 @@ export const createRecord: RequestHandler = async (req,res) => {
 
     const saved = await record.save()
 
-    return res.status(200).json({message:'Record created '})
+    return res.status(200).json({message:'Record created',_id:saved._id})
   }catch(error){ 
     return res.status(500).json({message:error})
   }

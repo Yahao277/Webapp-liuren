@@ -1,5 +1,6 @@
 // 五行 金木水火土
-enum fiveElement{
+
+export enum fiveElement{
   SHUI = 'shui',
   MU = 'mu',
   HUO = 'huo',
@@ -7,12 +8,12 @@ enum fiveElement{
   JIN = 'jin'
 }
 
-enum ElementRelation{
-  generate = '生', // 生，脱， 子孙
-  beingGenerated = '被生', // 被生，父母
-  restrain = '克', // 克， 妻财
-  beingRestrained = '被克', // 被克， 官鬼
-  none = '兄弟' // 兄弟
+export enum ElementRelation{
+  Generate = '子孙', // 生，脱， 子孙
+  BeingGenerated = '父母', // 被生，父母
+  Restrain = '妻财', // 克， 妻财
+  BeingRestrained = '官鬼', // 被克， 官鬼
+  None = '兄弟' // 兄弟
 }
 
 const elementRelationTable:{
@@ -22,35 +23,35 @@ const elementRelationTable:{
   tu: any,
   jin: any
 } = {
-  shui:{  shui:ElementRelation.none,
-          mu:ElementRelation.generate,
-          huo:ElementRelation.restrain,
-          tu:ElementRelation.beingRestrained,
-          jin:ElementRelation.beingGenerated,},
+  shui:{  shui:ElementRelation.None,
+          mu:ElementRelation.Generate,
+          huo:ElementRelation.Restrain,
+          tu:ElementRelation.BeingRestrained,
+          jin:ElementRelation.BeingGenerated,},
           
-  mu:{    shui:ElementRelation.beingGenerated,
-          mu:ElementRelation.none,
-          huo:ElementRelation.generate,
-          tu:ElementRelation.restrain,
-          jin:ElementRelation.beingRestrained,},
+  mu:{    shui:ElementRelation.BeingGenerated,
+          mu:ElementRelation.None,
+          huo:ElementRelation.Generate,
+          tu:ElementRelation.Restrain,
+          jin:ElementRelation.BeingRestrained,},
 
-  huo:{   shui:ElementRelation.beingRestrained,
-          mu:ElementRelation.beingGenerated,
-          huo:ElementRelation.none,
-          tu:ElementRelation.generate,
-          jin:ElementRelation.restrain,},
+  huo:{   shui:ElementRelation.BeingRestrained,
+          mu:ElementRelation.BeingGenerated,
+          huo:ElementRelation.None,
+          tu:ElementRelation.Generate,
+          jin:ElementRelation.Restrain,},
 
-  tu:{    shui:ElementRelation.restrain,
-          mu:ElementRelation.beingRestrained,
-          huo:ElementRelation.beingGenerated,
-          tu:ElementRelation.none,
-          jin:ElementRelation.generate,},
+  tu:{    shui:ElementRelation.Restrain,
+          mu:ElementRelation.BeingRestrained,
+          huo:ElementRelation.BeingGenerated,
+          tu:ElementRelation.None,
+          jin:ElementRelation.Generate,},
           
-  jin:{   shui:ElementRelation.generate,
-          mu:ElementRelation.restrain,
-          huo:ElementRelation.beingRestrained,
-          tu:ElementRelation.beingGenerated,
-          jin:ElementRelation.none, }
+  jin:{   shui:ElementRelation.Generate,
+          mu:ElementRelation.Restrain,
+          huo:ElementRelation.BeingRestrained,
+          tu:ElementRelation.BeingGenerated,
+          jin:ElementRelation.None, }
 }
 
 const getElementRelation = (src:fiveElement,dst:fiveElement):ElementRelation => {
@@ -58,9 +59,7 @@ const getElementRelation = (src:fiveElement,dst:fiveElement):ElementRelation => 
 }
 
 export { 
-  fiveElement,
-  ElementRelation,
-  getElementRelation,
+  getElementRelation
 };
 
 

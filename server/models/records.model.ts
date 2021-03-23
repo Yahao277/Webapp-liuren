@@ -1,12 +1,4 @@
 import { Schema, model } from "mongoose";
-import Liuren,{LiurenParams} from './../core/liuren/liuren'
-import {
-  Zhi,
-  TianGan as T,
-  DiZhi as D,
-  GanZhiPair,
-  Gan
-} from './../core/liuren/GanZhi';
 
 const recordSchema = new Schema({
     title: {
